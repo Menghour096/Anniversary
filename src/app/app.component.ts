@@ -28,15 +28,16 @@ import { MemoryService, Memory } from './memory.service';
           <div *ngIf="memories().length === 0" class="col-span-full flex items-center justify-center h-48 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/40 border-dashed">
             <p class="text-rose-500 font-medium">No memories added yet.</p>
           </div>
+          <!-- កន្លែងបង្ហាញកាតរូបភាព -->
           <div *ngFor="let memory of memories()" class="group relative bg-white/40 backdrop-blur-md border border-white/50 shadow-lg rounded-2xl overflow-hidden hover:shadow-2xl transition-all flex flex-col">
             <div class="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
               <button (click)="startEdit(memory)" class="bg-white/80 p-2 rounded-full text-rose-600">✎</button>
               <button (click)="deleteMemory(memory.id)" class="bg-white/80 p-2 rounded-full text-red-500">✕</button>
             </div>
             
-            <!-- 🟢 ខ្ញុំបានកែត្រង់នេះដោយប្ដូរពី h-48 ទៅ h-72 ដើម្បឱ្យរូបភាពបង្ហាញបានធំជាងមុន និងច្បាស់ល្អ -->
-            <div class="h-72 overflow-hidden relative">
-              <img [src]="memory.imageUrl" class="w-full h-full object-cover group-hover:scale-105 transition-transform" [alt]="memory.caption">
+            <!-- 🟢 ជម្រើសទី ១៖ បង្ហាញរូបភាពពេញ ១០០% (width: 100%, height: auto) -->
+            <div class="w-full overflow-hidden relative flex justify-center bg-black/5">
+              <img [src]="memory.imageUrl" class="w-full h-auto object-contain group-hover:scale-105 transition-transform" [alt]="memory.caption">
             </div>
             
             <div class="p-4 flex-1 flex flex-col justify-between">
