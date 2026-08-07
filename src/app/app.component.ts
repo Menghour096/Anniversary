@@ -51,7 +51,7 @@ export class AppComponent {
   memories = this.memoryService.memories;
   
   // 🔴 Update date here! format: YYYY-MM-DDTHH:MM:SS
-  anniversaryDate = new Date('2021-05-15T00:00:00');
+  anniversaryDate = new Date('2024-08-08T00:00:00');
   editingMemory: Memory | null = null;
 
   onAddMemory(data: any) { this.memoryService.addMemory(data); }

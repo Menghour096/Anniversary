@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Firestore, collection, collectionData, addDoc, doc, deleteDoc, updateDoc } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, addDoc, doc, deleteDoc, updateDoc, query } from '@angular/fire/firestore';
 import { Storage, ref, uploadString, getDownloadURL } from '@angular/fire/storage';
 
 export interface Memory {
@@ -20,7 +20,9 @@ export class MemoryService {
   memories = signal<Memory[]>([]);
 
   constructor() {
-    collectionData(this.memoriesCollection, { idField: 'id' }).subscribe((data: any[]) => {
+    // 🔴 ត្រូវរុំ collection ជាមួយ query() ទីនេះ ដើម្បីបំបាត់ Error _Query
+    const q = query(this.memoriesCollection);
+    collectionData(q, { idField: 'id' }).subscribe((data: any[]) => {
       const sortedData = data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
       this.memories.set(sortedData as Memory[]);
     });
