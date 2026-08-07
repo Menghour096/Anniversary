@@ -33,9 +33,12 @@ import { MemoryService, Memory } from './memory.service';
               <button (click)="startEdit(memory)" class="bg-white/80 p-2 rounded-full text-rose-600">✎</button>
               <button (click)="deleteMemory(memory.id)" class="bg-white/80 p-2 rounded-full text-red-500">✕</button>
             </div>
-            <div class="h-48 overflow-hidden relative">
+            
+            <!-- 🟢 ខ្ញុំបានកែត្រង់នេះដោយប្ដូរពី h-48 ទៅ h-72 ដើម្បឱ្យរូបភាពបង្ហាញបានធំជាងមុន និងច្បាស់ល្អ -->
+            <div class="h-72 overflow-hidden relative">
               <img [src]="memory.imageUrl" class="w-full h-full object-cover group-hover:scale-105 transition-transform" [alt]="memory.caption">
             </div>
+            
             <div class="p-4 flex-1 flex flex-col justify-between">
               <p class="text-rose-900 font-medium italic">"{{ memory.caption }}"</p>
               <div class="mt-4 text-xs font-bold text-rose-500 uppercase">{{ memory.date | date:'mediumDate' }}</div>

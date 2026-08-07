@@ -2,3 +2,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* ឧបមាថា class រូបភាពរបស់អ្នកឈ្មោះ .memory-image */
+.memory-image {
+  width: 100%;       /* ឱ្យរូបភាពរីកពេញប្រអប់ទទឹង */
+  height: auto;      /* កម្ពស់លោតដោយស្វ័យប្រវត្តិដើម្បីរក្សាទម្រង់ដើមរូបភាព */
+  max-width: 400px;  /* (ជាជម្រើស) កំណត់មិនឱ្យរូបភាពធំពេក */
+  border-radius: 8px; 
+}
