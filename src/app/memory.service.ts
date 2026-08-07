@@ -1,6 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Firestore, collection, collectionData, addDoc, doc, deleteDoc, updateDoc, query } from '@angular/fire/firestore';
-import { Storage, ref, uploadString, getDownloadURL } from '@angular/fire/storage';
 
 export interface Memory {
   id: string;
@@ -14,13 +13,15 @@ export interface Memory {
 })
 export class MemoryService {
   private firestore = inject(Firestore);
-  private storage = inject(Storage);
   private memoriesCollection = collection(this.firestore, 'memories');
   
   memories = signal<Memory[]>([]);
 
+  // 🔴 បញ្ចូល Cloud Name និង Preset Name របស់អ្នកនៅទីនេះ
+  private cloudinaryName = 'anniversary_preset'; 
+  private uploadPreset = 'anniversary_preset'; // ឧទាហរណ៍: anniversary_preset
+
   constructor() {
-    // 🔴 ត្រូវរុំ collection ជាមួយ query() ទីនេះ ដើម្បីបំបាត់ Error _Query
     const q = query(this.memoriesCollection);
     collectionData(q, { idField: 'id' }).subscribe((data: any[]) => {
       const sortedData = data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -28,11 +29,26 @@ export class MemoryService {
     });
   }
 
+  // អនុគមន៍ថ្មីសម្រាប់ Upload ទៅកាន់ Cloudinary
+  private async uploadToCloudinary(base64Image: string): Promise<string> {
+    const url = `https://api.cloudinary.com/v1_1/${this.cloudinaryName}/image/upload`;
+    const formData = new FormData();
+    formData.append('file', base64Image);
+    formData.append('upload_preset', this.uploadPreset);
+
+    const response = await fetch(url, {
+      method: 'POST',
+      body: formData
+    });
+    const data = await response.json();
+    return data.secure_url; // នេះគឺជា Link រូបភាពដែល Upload រួច
+  }
+
   async addMemory(memory: any) {
-    const filePath = `memories/${Date.now()}`;
-    const storageRef = ref(this.storage, filePath);
-    await uploadString(storageRef, memory.imageBase64, 'data_url');
-    const downloadUrl = await getDownloadURL(storageRef);
+    let downloadUrl = '';
+    if (memory.imageBase64) {
+      downloadUrl = await this.uploadToCloudinary(memory.imageBase64);
+    }
 
     await addDoc(this.memoriesCollection, {
       caption: memory.caption,
@@ -44,10 +60,7 @@ export class MemoryService {
   async updateMemory(id: string, updatedData: any) {
     const memoryDoc = doc(this.firestore, `memories/${id}`);
     if (updatedData.imageBase64 && updatedData.imageBase64.startsWith('data:image')) {
-        const filePath = `memories/${Date.now()}`;
-        const storageRef = ref(this.storage, filePath);
-        await uploadString(storageRef, updatedData.imageBase64, 'data_url');
-        updatedData.imageUrl = await getDownloadURL(storageRef);
+        updatedData.imageUrl = await this.uploadToCloudinary(updatedData.imageBase64);
         delete updatedData.imageBase64;
     }
     await updateDoc(memoryDoc, updatedData);
