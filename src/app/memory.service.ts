@@ -17,9 +17,9 @@ export class MemoryService {
   
   memories = signal<Memory[]>([]);
 
-  // 🔴 បញ្ចូល Cloud Name និង Preset Name របស់អ្នកនៅទីនេះ
-  private cloudinaryName = 'anniversary_preset'; 
-  private uploadPreset = 'anniversary_preset'; // ឧទាហរណ៍: anniversary_preset
+  // 🔴 កុំភ្លេចប្ដូរ 'ដាក់_CLOUD_NAME_ពិតប្រាកដនៅទីនេះ' ទៅជា Cloud Name របស់អ្នក
+  private cloudinaryName = 'hveaosx1'; 
+  private uploadPreset = 'anniversary_preset'; 
 
   constructor() {
     const q = query(this.memoriesCollection);
@@ -29,7 +29,7 @@ export class MemoryService {
     });
   }
 
-  // អនុគមន៍ថ្មីសម្រាប់ Upload ទៅកាន់ Cloudinary
+  // អនុគមន៍សម្រាប់ Upload ទៅកាន់ Cloudinary ដែលមានភ្ជាប់ប្រព័ន្ធចាប់ Error
   private async uploadToCloudinary(base64Image: string): Promise<string> {
     const url = `https://api.cloudinary.com/v1_1/${this.cloudinaryName}/image/upload`;
     const formData = new FormData();
@@ -40,30 +40,48 @@ export class MemoryService {
       method: 'POST',
       body: formData
     });
+    
     const data = await response.json();
-    return data.secure_url; // នេះគឺជា Link រូបភាពដែល Upload រួច
+
+    // ប្រព័ន្ធចាប់ Error
+    if (!response.ok) {
+      console.error('Cloudinary Error:', data);
+      alert('បរាជ័យក្នុងការបញ្ជូនរូបភាព! សូមពិនិត្យមើល Cloud Name របស់អ្នកម្ដងទៀត។');
+      throw new Error('Image upload failed');
+    }
+
+    return data.secure_url; 
   }
 
   async addMemory(memory: any) {
-    let downloadUrl = '';
-    if (memory.imageBase64) {
-      downloadUrl = await this.uploadToCloudinary(memory.imageBase64);
-    }
+    try {
+      let downloadUrl = '';
+      if (memory.imageBase64) {
+        downloadUrl = await this.uploadToCloudinary(memory.imageBase64);
+      }
 
-    await addDoc(this.memoriesCollection, {
-      caption: memory.caption,
-      date: memory.date,
-      imageUrl: downloadUrl
-    });
+      await addDoc(this.memoriesCollection, {
+        caption: memory.caption,
+        date: memory.date,
+        imageUrl: downloadUrl
+      });
+      console.log("Memory Added Successfully!");
+    } catch (error) {
+      console.error("Error saving memory:", error);
+    }
   }
 
   async updateMemory(id: string, updatedData: any) {
     const memoryDoc = doc(this.firestore, `memories/${id}`);
-    if (updatedData.imageBase64 && updatedData.imageBase64.startsWith('data:image')) {
-        updatedData.imageUrl = await this.uploadToCloudinary(updatedData.imageBase64);
-        delete updatedData.imageBase64;
+    try {
+      if (updatedData.imageBase64 && updatedData.imageBase64.startsWith('data:image')) {
+          updatedData.imageUrl = await this.uploadToCloudinary(updatedData.imageBase64);
+          delete updatedData.imageBase64;
+      }
+      await updateDoc(memoryDoc, updatedData);
+    } catch (error) {
+      console.error("Error updating memory:", error);
     }
-    await updateDoc(memoryDoc, updatedData);
   }
 
   async deleteMemory(id: string) {

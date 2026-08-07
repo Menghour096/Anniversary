@@ -1,8 +1,10 @@
-import { bootstrapApplication } from '@angular/platform-browser';
+import 'zone.js';
+// import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideStorage, getStorage } from '@angular/fire/storage';
+import { bootstrapApplication } from '@angular/platform-browser';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBnlmvYGlPyR0fTBqQOA4E81Nyk2nz_XTQ",
@@ -20,4 +22,4 @@ bootstrapApplication(AppComponent, {
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
   ]
-}).catch((err) => console.error(err));
+}).catch((err: any) => console.error(err));
