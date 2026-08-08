@@ -9,11 +9,41 @@ import { MemoryService, Memory, CoupleProfile } from './memory.service';
   selector: 'app-root',
   standalone: true,
   imports: [CommonModule, FormsModule, TimerComponent, MemoryFormComponent],
+  
+  // 🌟 នេះគឺជាកូដ CSS សម្រាប់ធ្វើឱ្យបេះដូងអណ្តែតឡើងលើ
+  styles: [`
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.8; }
+      100% { transform: translateY(-10vh) scale(1.2) rotate(360deg); opacity: 0; }
+    }
+    .floating-item {
+      position: fixed;
+      bottom: -10vh;
+      animation: floatUp linear infinite;
+      z-index: 0;
+    }
+  `],
+
   template: `
-    <main class="min-h-screen bg-gradient-to-br from-pink-100 via-rose-50 to-pink-100 p-4 md:p-8 font-sans pb-10 relative flex flex-col">
+    <main class="min-h-screen bg-gradient-to-br from-pink-100 via-rose-50 to-pink-100 p-4 md:p-8 font-sans pb-10 relative flex flex-col overflow-hidden">
       
+      <!-- 🌟 Floating Background Animation (បេះដូងអណ្តែត) 🌟 -->
+      <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div class="floating-item text-pink-300/40 text-2xl" style="left: 10%; animation-duration: 12s; animation-delay: 0s;">❤️</div>
+        <div class="floating-item text-rose-300/40 text-4xl" style="left: 30%; animation-duration: 15s; animation-delay: 2s;">💖</div>
+        <div class="floating-item text-pink-400/30 text-xl" style="left: 50%; animation-duration: 18s; animation-delay: 4s;">💕</div>
+        <div class="floating-item text-rose-400/30 text-3xl" style="left: 70%; animation-duration: 14s; animation-delay: 1s;">🌸</div>
+        <div class="floating-item text-pink-300/40 text-5xl" style="left: 85%; animation-duration: 20s; animation-delay: 3s;">❤️</div>
+        <div class="floating-item text-rose-200/50 text-2xl" style="left: 20%; animation-duration: 16s; animation-delay: 5s;">✨</div>
+        <div class="floating-item text-pink-200/50 text-4xl" style="left: 60%; animation-duration: 13s; animation-delay: 7s;">💖</div>
+        <div class="floating-item text-rose-300/40 text-xl" style="left: 80%; animation-duration: 17s; animation-delay: 6s;">💕</div>
+        <div class="floating-item text-white/40 text-2xl" style="left: 40%; animation-duration: 19s; animation-delay: 8s;">✨</div>
+      </div>
+
       <!-- 🔒 ផ្ទាំង Login -->
-      <div *ngIf="!isLoggedIn" class="flex-1 flex flex-col items-center justify-center animate-fade-in-up">
+      <div *ngIf="!isLoggedIn" class="flex-1 flex flex-col items-center justify-center animate-fade-in-up relative z-10">
         <div class="bg-white/60 backdrop-blur-md p-8 sm:p-10 rounded-3xl shadow-2xl text-center max-w-sm w-full border border-white/50 relative overflow-hidden">
           <div class="absolute -top-4 -left-4 text-4xl opacity-50 transform -rotate-12">💖</div>
           <div class="absolute -bottom-4 -right-4 text-4xl opacity-50 transform rotate-12">🌸</div>
@@ -33,7 +63,7 @@ import { MemoryService, Memory, CoupleProfile } from './memory.service';
       <ng-container *ngIf="isLoggedIn">
         
         <!-- Profile Banner Section -->
-        <div class="max-w-5xl w-full mx-auto rounded-3xl overflow-hidden shadow-2xl mb-8 relative group shrink-0 animate-fade-in-up">
+        <div class="max-w-5xl w-full mx-auto rounded-3xl overflow-hidden shadow-2xl mb-8 relative group shrink-0 animate-fade-in-up z-10">
           <button (click)="openProfileForm()" class="absolute top-4 right-4 z-30 bg-white/30 hover:bg-white/90 text-white hover:text-rose-600 backdrop-blur-md px-3 py-2 rounded-full shadow-lg transition-all border border-white/50 text-sm font-bold">
              ✎ Edit Profile
           </button>
@@ -47,12 +77,9 @@ import { MemoryService, Memory, CoupleProfile } from './memory.service';
              <div class="flex flex-col items-center z-10 text-white w-1/3">
                 <img [src]="coupleProfile().person1.imageUrl" class="w-24 h-24 sm:w-36 sm:h-36 rounded-full border-4 border-white object-cover shadow-lg hover:scale-105 transition-transform">
                 <h2 class="mt-3 text-sm sm:text-2xl font-bold drop-shadow-md text-center">{{coupleProfile().person1.name}}</h2>
-                
-                <!-- 🟢 បង្ហាញថ្ងៃខែឆ្នាំកំណើតនៅត្រង់នេះ 🟢 -->
                 <p class="text-[9px] sm:text-sm font-medium text-pink-100 drop-shadow-md mt-0.5 tracking-wide">
                   🎂 {{ coupleProfile().person1.dob | date:'mediumDate' }}
                 </p>
-
                 <div class="flex flex-wrap justify-center gap-1 sm:gap-2 mt-2">
                   <span class="bg-pink-500/90 px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-sm font-bold backdrop-blur-sm shadow-md">
                     {{ coupleProfile().person1.gender === 'M' ? '♂' : '♀' }} {{ calculateAge(coupleProfile().person1.dob) }}
@@ -78,12 +105,9 @@ import { MemoryService, Memory, CoupleProfile } from './memory.service';
              <div class="flex flex-col items-center z-10 text-white w-1/3">
                 <img [src]="coupleProfile().person2.imageUrl" class="w-24 h-24 sm:w-36 sm:h-36 rounded-full border-4 border-white object-cover shadow-lg hover:scale-105 transition-transform">
                 <h2 class="mt-3 text-sm sm:text-2xl font-bold drop-shadow-md text-center">{{coupleProfile().person2.name}}</h2>
-                
-                <!-- 🟢 បង្ហាញថ្ងៃខែឆ្នាំកំណើតនៅត្រង់នេះ 🟢 -->
                 <p class="text-[9px] sm:text-sm font-medium text-pink-100 drop-shadow-md mt-0.5 tracking-wide">
                   🎂 {{ coupleProfile().person2.dob | date:'mediumDate' }}
                 </p>
-
                 <div class="flex flex-wrap justify-center gap-1 sm:gap-2 mt-2">
                   <span class="bg-pink-500/90 px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-sm font-bold backdrop-blur-sm shadow-md">
                     {{ coupleProfile().person2.gender === 'M' ? '♂' : '♀' }} {{ calculateAge(coupleProfile().person2.dob) }}
@@ -97,7 +121,7 @@ import { MemoryService, Memory, CoupleProfile } from './memory.service';
         </div>
 
         <!-- Timer & Add Button Section -->
-        <div class="max-w-4xl w-full mx-auto space-y-4 mb-10 text-center shrink-0">
+        <div class="max-w-4xl w-full mx-auto space-y-4 mb-10 text-center shrink-0 z-10 relative">
           <app-timer [startDate]="anniversaryDate"></app-timer>
           <div class="pt-4">
             <button (click)="openAddForm()" class="bg-rose-500 hover:bg-rose-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all transform hover:scale-105 flex items-center justify-center mx-auto gap-2 border-2 border-white/50">
@@ -107,7 +131,7 @@ import { MemoryService, Memory, CoupleProfile } from './memory.service';
         </div>
 
         <!-- Memories Grid -->
-        <div class="max-w-6xl w-full mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 flex-1 items-start">
+        <div class="max-w-6xl w-full mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 flex-1 items-start z-10 relative">
           <div *ngIf="memories().length === 0" class="col-span-full flex items-center justify-center h-48 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/40 border-dashed">
             <p class="text-rose-500 font-medium">No memories added yet.</p>
           </div>
@@ -135,7 +159,7 @@ import { MemoryService, Memory, CoupleProfile } from './memory.service';
         </div>
 
         <!-- Bottom Custom Caption -->
-        <div class="max-w-3xl mx-auto w-full text-center mt-16 pt-8 pb-4 shrink-0 border-t border-rose-200/60">
+        <div class="max-w-3xl mx-auto w-full text-center mt-16 pt-8 pb-4 shrink-0 border-t border-rose-200/60 z-10 relative">
           <p class="text-lg sm:text-xl md:text-2xl text-rose-600 font-serif italic drop-shadow-sm leading-relaxed">
             "{{ coupleProfile().bottomCaption || 'Every love story is beautiful, but ours is my favorite. ❤️' }}"
           </p>
