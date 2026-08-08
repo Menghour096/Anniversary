@@ -10,7 +10,7 @@ import { MemoryService, Memory, CoupleProfile } from './memory.service';
   standalone: true,
   imports: [CommonModule, FormsModule, TimerComponent, MemoryFormComponent],
   
-  // 🌟 បន្ថែម CSS សម្រាប់ Background លោតពណ៌ និងបេះដូងអណ្តែត
+  // 🌟 បន្ថែម CSS សម្រាប់ Background លោតពណ៌ និង CSS Hearts (បេះដូងគូរដោយកូដ)
   styles: [`
     /* 1. ចលនាសម្រាប់ផ្ទៃខាងក្រោយ (Moving Gradient) */
     @keyframes gradientShift {
@@ -19,42 +19,81 @@ import { MemoryService, Memory, CoupleProfile } from './memory.service';
       100% { background-position: 0% 50%; }
     }
     .animated-gradient-bg {
-      /* ប្រើពណ៌ផ្កាឈូក និងស៊ីជម្ពូចម្រុះគ្នា */
       background: linear-gradient(-45deg, #ffe4e6, #fce7f3, #fff1f2, #fbcfe8);
       background-size: 400% 400%;
       animation: gradientShift 12s ease infinite;
     }
 
-    /* 2. ចលនាសម្រាប់បេះដូងអណ្តែត (Floating Hearts) */
-    @keyframes floatUp {
-      0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 0; }
-      10% { opacity: 0.8; }
-      90% { opacity: 0.8; }
-      100% { transform: translateY(-10vh) scale(1.2) rotate(360deg); opacity: 0; }
+    /* 2. ចលនាសម្រាប់បេះដូងអណ្តែតឡើង (Floating Animation) */
+    @keyframes floatUpHearts {
+      0% { transform: translateY(10vh) scale(0.5); opacity: 0; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.6; }
+      100% { transform: translateY(-110vh) scale(1.2); opacity: 0; }
     }
-    .floating-item {
+    
+    .heart-wrapper {
       position: fixed;
       bottom: -10vh;
-      animation: floatUp linear infinite;
+      animation: floatUpHearts linear infinite;
       z-index: 0;
+    }
+    
+    /* 3. កូដគូររូបបេះដូង (CSS Heart Shape) 💖 */
+    .heart-shape {
+      position: relative;
+      width: 20px;
+      height: 20px;
+      transform: rotate(-45deg);
+    }
+    .heart-shape::before,
+    .heart-shape::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: inherit; /* យកពណ៌តាមតួកណ្ដាល */
+    }
+    .heart-shape::before {
+      top: -10px;
+      left: 0;
+    }
+    .heart-shape::after {
+      top: 0;
+      left: 10px;
     }
   `],
 
   template: `
-    <!-- 🟢 បានប្រើ Class ថ្មី 'animated-gradient-bg' ដើម្បីឱ្យផ្ទៃខាងក្រោយមានចលនា -->
     <main class="min-h-screen animated-gradient-bg p-4 md:p-8 font-sans pb-10 relative flex flex-col overflow-hidden">
       
-      <!-- 🌟 Floating Background Animation (បេះដូងអណ្តែត) 🌟 -->
+      <!-- 🌟 CSS Floating Hearts Background 🌟 -->
       <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div class="floating-item text-pink-300/40 text-2xl" style="left: 10%; animation-duration: 12s; animation-delay: 0s;">❤️</div>
-        <div class="floating-item text-rose-300/40 text-4xl" style="left: 30%; animation-duration: 15s; animation-delay: 2s;">💖</div>
-        <div class="floating-item text-pink-400/30 text-xl" style="left: 50%; animation-duration: 18s; animation-delay: 4s;">💕</div>
-        <div class="floating-item text-rose-400/30 text-3xl" style="left: 70%; animation-duration: 14s; animation-delay: 1s;">🌸</div>
-        <div class="floating-item text-pink-300/40 text-5xl" style="left: 85%; animation-duration: 20s; animation-delay: 3s;">❤️</div>
-        <div class="floating-item text-rose-200/50 text-2xl" style="left: 20%; animation-duration: 16s; animation-delay: 5s;">✨</div>
-        <div class="floating-item text-pink-200/50 text-4xl" style="left: 60%; animation-duration: 13s; animation-delay: 7s;">💖</div>
-        <div class="floating-item text-rose-300/40 text-xl" style="left: 80%; animation-duration: 17s; animation-delay: 6s;">💕</div>
-        <div class="floating-item text-white/40 text-2xl" style="left: 40%; animation-duration: 19s; animation-delay: 8s;">✨</div>
+        <div class="heart-wrapper" style="left: 10%; animation-duration: 12s; animation-delay: 0s;">
+           <div class="heart-shape bg-rose-400"></div>
+        </div>
+        <div class="heart-wrapper" style="left: 30%; animation-duration: 15s; animation-delay: 4s;">
+           <div class="heart-shape bg-pink-300" style="transform: scale(0.8) rotate(-45deg);"></div>
+        </div>
+        <div class="heart-wrapper" style="left: 50%; animation-duration: 18s; animation-delay: 2s;">
+           <div class="heart-shape bg-rose-300" style="transform: scale(1.5) rotate(-45deg);"></div>
+        </div>
+        <div class="heart-wrapper" style="left: 70%; animation-duration: 14s; animation-delay: 7s;">
+           <div class="heart-shape bg-pink-400" style="transform: scale(1.2) rotate(-45deg);"></div>
+        </div>
+        <div class="heart-wrapper" style="left: 85%; animation-duration: 20s; animation-delay: 1s;">
+           <div class="heart-shape bg-rose-500" style="transform: scale(0.6) rotate(-45deg);"></div>
+        </div>
+        <div class="heart-wrapper" style="left: 20%; animation-duration: 17s; animation-delay: 5s;">
+           <div class="heart-shape bg-pink-500" style="transform: scale(1.1) rotate(-45deg);"></div>
+        </div>
+        <div class="heart-wrapper" style="left: 60%; animation-duration: 13s; animation-delay: 8s;">
+           <div class="heart-shape bg-rose-400" style="transform: scale(0.9) rotate(-45deg);"></div>
+        </div>
+        <div class="heart-wrapper" style="left: 80%; animation-duration: 16s; animation-delay: 3s;">
+           <div class="heart-shape bg-pink-300" style="transform: scale(1.3) rotate(-45deg);"></div>
+        </div>
       </div>
 
       <!-- 🔒 ផ្ទាំង Login -->
