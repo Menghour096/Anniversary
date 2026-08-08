@@ -7,6 +7,7 @@ export interface CoupleProfile {
   backgroundUrl: string;
   person1: { name: string; dob: string; imageUrl: string; gender: string };
   person2: { name: string; dob: string; imageUrl: string; gender: string };
+  bottomCaption: string; // 🟢 បន្ថែមជួរនេះ
 }
 
 @Injectable({
@@ -23,7 +24,8 @@ export class MemoryService {
   defaultProfile: CoupleProfile = {
     backgroundUrl: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=2070&auto=format&fit=crop',
     person1: { name: 'Heng Menghour', dob: '2006-06-19', imageUrl: 'https://i.pravatar.cc/300?img=11', gender: 'M' },
-    person2: { name: 'Thuo Seanghong', dob: '2006-05-13', imageUrl: 'https://i.pravatar.cc/300?img=5', gender: 'F' }
+    person2: { name: 'Thuo Seanghong', dob: '2006-05-13', imageUrl: 'https://i.pravatar.cc/300?img=5', gender: 'F' },
+    bottomCaption: 'Every love story is beautiful, but ours is my favorite. ❤️' // 🟢 បន្ថែមជួរនេះ
   };
   profile = signal<CoupleProfile>(this.defaultProfile);
 
@@ -105,4 +107,5 @@ export class MemoryService {
     const memoryDoc = doc(this.firestore, `memories/${id}`);
     await deleteDoc(memoryDoc);
   }
+  
 }
