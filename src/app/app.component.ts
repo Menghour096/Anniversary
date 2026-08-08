@@ -12,98 +12,135 @@ import { MemoryService, Memory, CoupleProfile } from './memory.service';
   template: `
     <main class="min-h-screen bg-gradient-to-br from-pink-100 via-rose-50 to-pink-100 p-4 md:p-8 font-sans pb-10 relative flex flex-col">
       
-      <!-- Profile Banner Section -->
-      <div class="max-w-5xl w-full mx-auto rounded-3xl overflow-hidden shadow-2xl mb-8 relative group shrink-0">
-        <button (click)="openProfileForm()" class="absolute top-4 right-4 z-30 bg-white/30 hover:bg-white/90 text-white hover:text-rose-600 backdrop-blur-md px-3 py-2 rounded-full shadow-lg transition-all border border-white/50 text-sm font-bold">
-           ✎ Edit Profile
-        </button>
-        <div class="h-72 sm:h-96 w-full relative">
-          <img [src]="coupleProfile().backgroundUrl" class="w-full h-full object-cover" alt="Background">
-          <div class="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/60"></div>
-        </div>
-        <div class="absolute inset-0 flex items-center justify-center gap-2 sm:gap-16 px-2 pt-12">
-           <div class="flex flex-col items-center z-10 text-white w-1/3">
-              <img [src]="coupleProfile().person1.imageUrl" class="w-24 h-24 sm:w-36 sm:h-36 rounded-full border-4 border-white object-cover shadow-lg hover:scale-105 transition-transform">
-              <h2 class="mt-3 text-sm sm:text-2xl font-bold drop-shadow-md text-center">{{coupleProfile().person1.name}}</h2>
-              <div class="flex flex-wrap justify-center gap-1 sm:gap-2 mt-2">
-                <span class="bg-pink-500/90 px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-sm font-bold backdrop-blur-sm shadow-md">
-                  {{ coupleProfile().person1.gender === 'M' ? '♂' : '♀' }} {{ calculateAge(coupleProfile().person1.dob) }}
-                </span>
-                <span class="bg-[#8FBC8F]/90 px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-sm font-bold backdrop-blur-sm shadow-md flex items-center gap-1">
-                  {{ getZodiacSign(coupleProfile().person1.dob).icon }} {{ getZodiacSign(coupleProfile().person1.dob).sign }}
-                </span>
-              </div>
-           </div>
-           <div class="flex flex-col items-center justify-center -mt-8 sm:-mt-12 z-20">
-              <div class="text-4xl sm:text-7xl drop-shadow-2xl animate-pulse flex">
-                <span class="text-red-500 transform -rotate-12">❤️</span>
-                <span class="text-red-500 transform rotate-12 -ml-2 sm:-ml-4 mt-4 sm:mt-8">❤️</span>
-              </div>
-              <div class="mt-2 sm:mt-5 bg-black/20 backdrop-blur-md px-3 sm:px-5 py-1 sm:py-1.5 rounded-full border border-white/40 text-white font-medium text-[10px] sm:text-sm shadow-xl flex items-center gap-1 sm:gap-2 hover:bg-white/20 transition-colors">
-                <span>💍</span> Since {{ anniversaryDate | date:'longDate' }}
-              </div>
-           </div>
-           <div class="flex flex-col items-center z-10 text-white w-1/3">
-              <img [src]="coupleProfile().person2.imageUrl" class="w-24 h-24 sm:w-36 sm:h-36 rounded-full border-4 border-white object-cover shadow-lg hover:scale-105 transition-transform">
-              <h2 class="mt-3 text-sm sm:text-2xl font-bold drop-shadow-md text-center">{{coupleProfile().person2.name}}</h2>
-              <div class="flex flex-wrap justify-center gap-1 sm:gap-2 mt-2">
-                <span class="bg-pink-500/90 px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-sm font-bold backdrop-blur-sm shadow-md">
-                  {{ coupleProfile().person2.gender === 'M' ? '♂' : '♀' }} {{ calculateAge(coupleProfile().person2.dob) }}
-                </span>
-                <span class="bg-[#8FBC8F]/90 px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-sm font-bold backdrop-blur-sm shadow-md flex items-center gap-1">
-                  {{ getZodiacSign(coupleProfile().person2.dob).icon }} {{ getZodiacSign(coupleProfile().person2.dob).sign }}
-                </span>
-              </div>
-           </div>
-        </div>
-      </div>
-
-      <!-- Timer & Add Button Section -->
-      <div class="max-w-4xl w-full mx-auto space-y-4 mb-10 text-center shrink-0">
-        <app-timer [startDate]="anniversaryDate"></app-timer>
-        <div class="pt-4">
-          <button (click)="openAddForm()" class="bg-rose-500 hover:bg-rose-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all transform hover:scale-105 flex items-center justify-center mx-auto gap-2 border-2 border-white/50">
-            <span class="text-2xl leading-none -mt-1">+</span> Add Memory
+      <!-- 🔒 ផ្ទាំង Login -->
+      <div *ngIf="!isLoggedIn" class="flex-1 flex flex-col items-center justify-center animate-fade-in-up">
+        <div class="bg-white/60 backdrop-blur-md p-8 sm:p-10 rounded-3xl shadow-2xl text-center max-w-sm w-full border border-white/50 relative overflow-hidden">
+          <div class="absolute -top-4 -left-4 text-4xl opacity-50 transform -rotate-12">💖</div>
+          <div class="absolute -bottom-4 -right-4 text-4xl opacity-50 transform rotate-12">🌸</div>
+          <div class="text-6xl animate-bounce mb-4">🔐</div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-rose-600 mb-2 font-serif drop-shadow-sm">Our Secret Diary</h2>
+          <p class="text-rose-500 mb-6 text-sm font-medium">Please enter our secret code to unlock the memories.</p>
+          <input type="password" [(ngModel)]="enteredCode" (keyup.enter)="checkLogin()" placeholder="Enter passcode..."
+                 class="w-full px-4 py-3 rounded-full border-2 border-rose-200 focus:outline-none focus:border-rose-400 text-center text-rose-700 font-bold mb-4 bg-white/80 shadow-inner transition-colors">
+          <p *ngIf="loginError" class="text-red-500 text-xs font-bold mb-4 animate-pulse">Incorrect code, please try again! 🥺</p>
+          <button (click)="checkLogin()" class="w-full bg-rose-500 hover:bg-rose-600 text-white font-bold py-3 rounded-full shadow-lg transition-transform transform hover:scale-105">
+            Unlock Memories 🔓
           </button>
         </div>
       </div>
 
-      <!-- Memories Grid -->
-      <div class="max-w-6xl w-full mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 flex-1">
-        <div *ngIf="memories().length === 0" class="col-span-full flex items-center justify-center h-48 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/40 border-dashed">
-          <p class="text-rose-500 font-medium">No memories added yet.</p>
-        </div>
+      <!-- 🌟 ផ្ទាំង Main Page -->
+      <ng-container *ngIf="isLoggedIn">
         
-        <div *ngFor="let memory of memories(); let i = index" class="group relative bg-white/40 backdrop-blur-md border border-white/50 shadow-lg rounded-2xl overflow-hidden hover:shadow-2xl transition-all flex flex-col">
-          <div class="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-            <button (click)="startEdit(memory)" class="bg-white/90 shadow-md p-2 rounded-full text-rose-600 hover:bg-white">✎</button>
-            <button (click)="deleteMemory(memory.id)" class="bg-white/90 shadow-md p-2 rounded-full text-red-500 hover:bg-white">✕</button>
+        <!-- Profile Banner Section -->
+        <div class="max-w-5xl w-full mx-auto rounded-3xl overflow-hidden shadow-2xl mb-8 relative group shrink-0 animate-fade-in-up">
+          <button (click)="openProfileForm()" class="absolute top-4 right-4 z-30 bg-white/30 hover:bg-white/90 text-white hover:text-rose-600 backdrop-blur-md px-3 py-2 rounded-full shadow-lg transition-all border border-white/50 text-sm font-bold">
+             ✎ Edit Profile
+          </button>
+          <div class="h-72 sm:h-96 w-full relative">
+            <img [src]="coupleProfile().backgroundUrl" class="w-full h-full object-cover" alt="Background">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/60"></div>
           </div>
-          
-          <div class="w-full overflow-hidden relative flex justify-center bg-black/5">
-            <img [src]="memory.imageUrl" class="w-full h-auto object-contain group-hover:scale-105 transition-transform" [alt]="memory.caption">
-          </div>
-          
-          <div class="p-4 flex-1 flex flex-col">
-            <p class="text-rose-900 font-medium italic">"{{ memory.caption }}"</p>
-            
-            <div class="flex-1 flex items-center justify-center min-h-[3rem] mt-2 opacity-50 group-hover:opacity-100 transition-opacity">
-              <span class="text-3xl filter drop-shadow-sm group-hover:animate-bounce cursor-default">
-                {{ cuteStickers[i % cuteStickers.length] }}
-              </span>
-            </div>
+          <div class="absolute inset-0 flex items-center justify-center gap-2 sm:gap-16 px-2 pt-12">
+             
+             <!-- Person 1 (ខាងឆ្វេង) -->
+             <div class="flex flex-col items-center z-10 text-white w-1/3">
+                <img [src]="coupleProfile().person1.imageUrl" class="w-24 h-24 sm:w-36 sm:h-36 rounded-full border-4 border-white object-cover shadow-lg hover:scale-105 transition-transform">
+                <h2 class="mt-3 text-sm sm:text-2xl font-bold drop-shadow-md text-center">{{coupleProfile().person1.name}}</h2>
+                
+                <!-- 🟢 បង្ហាញថ្ងៃខែឆ្នាំកំណើតនៅត្រង់នេះ 🟢 -->
+                <p class="text-[9px] sm:text-sm font-medium text-pink-100 drop-shadow-md mt-0.5 tracking-wide">
+                  🎂 {{ coupleProfile().person1.dob | date:'mediumDate' }}
+                </p>
 
-            <div class="mt-3 text-xs font-bold text-rose-500 uppercase">{{ memory.date | date:'mediumDate' }}</div>
+                <div class="flex flex-wrap justify-center gap-1 sm:gap-2 mt-2">
+                  <span class="bg-pink-500/90 px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-sm font-bold backdrop-blur-sm shadow-md">
+                    {{ coupleProfile().person1.gender === 'M' ? '♂' : '♀' }} {{ calculateAge(coupleProfile().person1.dob) }}
+                  </span>
+                  <span class="bg-[#8FBC8F]/90 px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-sm font-bold backdrop-blur-sm shadow-md flex items-center gap-1">
+                    {{ getZodiacSign(coupleProfile().person1.dob).icon }} {{ getZodiacSign(coupleProfile().person1.dob).sign }}
+                  </span>
+                </div>
+             </div>
+             
+             <!-- Floating Hearts & Start Date -->
+             <div class="flex flex-col items-center justify-center -mt-8 sm:-mt-12 z-20">
+                <div class="text-4xl sm:text-7xl drop-shadow-2xl animate-pulse flex">
+                  <span class="text-red-500 transform -rotate-12">❤️</span>
+                  <span class="text-red-500 transform rotate-12 -ml-2 sm:-ml-4 mt-4 sm:mt-8">❤️</span>
+                </div>
+                <div class="mt-2 sm:mt-5 bg-black/20 backdrop-blur-md px-3 sm:px-5 py-1 sm:py-1.5 rounded-full border border-white/40 text-white font-medium text-[10px] sm:text-sm shadow-xl flex items-center gap-1 sm:gap-2 hover:bg-white/20 transition-colors">
+                  <span>💍</span> Since {{ anniversaryDate | date:'longDate' }}
+                </div>
+             </div>
+             
+             <!-- Person 2 (ខាងស្តាំ) -->
+             <div class="flex flex-col items-center z-10 text-white w-1/3">
+                <img [src]="coupleProfile().person2.imageUrl" class="w-24 h-24 sm:w-36 sm:h-36 rounded-full border-4 border-white object-cover shadow-lg hover:scale-105 transition-transform">
+                <h2 class="mt-3 text-sm sm:text-2xl font-bold drop-shadow-md text-center">{{coupleProfile().person2.name}}</h2>
+                
+                <!-- 🟢 បង្ហាញថ្ងៃខែឆ្នាំកំណើតនៅត្រង់នេះ 🟢 -->
+                <p class="text-[9px] sm:text-sm font-medium text-pink-100 drop-shadow-md mt-0.5 tracking-wide">
+                  🎂 {{ coupleProfile().person2.dob | date:'mediumDate' }}
+                </p>
+
+                <div class="flex flex-wrap justify-center gap-1 sm:gap-2 mt-2">
+                  <span class="bg-pink-500/90 px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-sm font-bold backdrop-blur-sm shadow-md">
+                    {{ coupleProfile().person2.gender === 'M' ? '♂' : '♀' }} {{ calculateAge(coupleProfile().person2.dob) }}
+                  </span>
+                  <span class="bg-[#8FBC8F]/90 px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-sm font-bold backdrop-blur-sm shadow-md flex items-center gap-1">
+                    {{ getZodiacSign(coupleProfile().person2.dob).icon }} {{ getZodiacSign(coupleProfile().person2.dob).sign }}
+                  </span>
+                </div>
+             </div>
           </div>
         </div>
-      </div>
 
-      <!-- 🌟 Bottom Custom Caption / Footer Message -->
-      <div class="max-w-3xl mx-auto w-full text-center mt-16 pt-8 pb-4 shrink-0 border-t border-rose-200/60">
-        <p class="text-lg sm:text-xl md:text-2xl text-rose-600 font-serif italic drop-shadow-sm leading-relaxed">
-          "{{ coupleProfile().bottomCaption || 'Every love story is beautiful, but ours is my favorite. ❤️' }}"
-        </p>
-      </div>
+        <!-- Timer & Add Button Section -->
+        <div class="max-w-4xl w-full mx-auto space-y-4 mb-10 text-center shrink-0">
+          <app-timer [startDate]="anniversaryDate"></app-timer>
+          <div class="pt-4">
+            <button (click)="openAddForm()" class="bg-rose-500 hover:bg-rose-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all transform hover:scale-105 flex items-center justify-center mx-auto gap-2 border-2 border-white/50">
+              <span class="text-2xl leading-none -mt-1">+</span> Add Memory
+            </button>
+          </div>
+        </div>
+
+        <!-- Memories Grid -->
+        <div class="max-w-6xl w-full mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 flex-1 items-start">
+          <div *ngIf="memories().length === 0" class="col-span-full flex items-center justify-center h-48 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/40 border-dashed">
+            <p class="text-rose-500 font-medium">No memories added yet.</p>
+          </div>
+          
+          <div *ngFor="let memory of memories(); let i = index" class="group relative bg-white/40 backdrop-blur-md border border-white/50 shadow-lg rounded-2xl overflow-hidden hover:shadow-2xl transition-all flex flex-col">
+            <div class="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+              <button (click)="startEdit(memory)" class="bg-white/90 shadow-md p-2 rounded-full text-rose-600 hover:bg-white">✎</button>
+              <button (click)="deleteMemory(memory.id)" class="bg-white/90 shadow-md p-2 rounded-full text-red-500 hover:bg-white">✕</button>
+            </div>
+            
+            <div class="w-full overflow-hidden relative flex justify-center bg-black/5">
+              <img [src]="memory.imageUrl" class="w-full h-auto object-contain group-hover:scale-105 transition-transform" [alt]="memory.caption">
+            </div>
+            
+            <div class="p-4 flex-1 flex flex-col">
+              <p class="text-rose-900 font-medium italic">"{{ memory.caption }}"</p>
+              <div class="flex-1 flex items-center justify-center min-h-[3rem] mt-2 opacity-50 group-hover:opacity-100 transition-opacity">
+                <span class="text-3xl filter drop-shadow-sm group-hover:animate-bounce cursor-default">
+                  {{ cuteStickers[i % cuteStickers.length] }}
+                </span>
+              </div>
+              <div class="mt-3 text-xs font-bold text-rose-500 uppercase">{{ memory.date | date:'mediumDate' }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Custom Caption -->
+        <div class="max-w-3xl mx-auto w-full text-center mt-16 pt-8 pb-4 shrink-0 border-t border-rose-200/60">
+          <p class="text-lg sm:text-xl md:text-2xl text-rose-600 font-serif italic drop-shadow-sm leading-relaxed">
+            "{{ coupleProfile().bottomCaption || 'Every love story is beautiful, but ours is my favorite. ❤️' }}"
+          </p>
+        </div>
+      </ng-container>
 
       <!-- Memory Add/Edit Modal -->
       <div *ngIf="showMemoryForm" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity">
@@ -123,7 +160,6 @@ import { MemoryService, Memory, CoupleProfile } from './memory.service';
           <h2 class="text-2xl font-bold text-rose-600 mb-4 border-b pb-2">Edit Couple Profile</h2>
           
           <div class="space-y-4 max-h-[70vh] overflow-y-auto pr-2" *ngIf="editProfileData">
-            
             <div class="p-3 bg-pink-50 rounded-xl">
               <label class="block text-sm font-bold text-rose-700 mb-1">Background Image</label>
               <input type="file" (change)="onProfileImageSelected($event, 'bg')" class="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-100 file:text-rose-700 hover:file:bg-rose-200">
@@ -157,12 +193,10 @@ import { MemoryService, Memory, CoupleProfile } from './memory.service';
               <input type="file" (change)="onProfileImageSelected($event, 'p2')" class="w-full text-sm">
             </div>
 
-            <!-- 🌟 Edit Bottom Caption Field 🌟 -->
             <div class="p-3 bg-white rounded-xl border border-gray-200 shadow-sm mt-4">
               <label class="block text-sm font-bold text-gray-700 mb-1">Bottom Page Caption</label>
               <textarea [(ngModel)]="editProfileData.bottomCaption" rows="2" placeholder="Write a sweet message..." class="w-full p-2 border rounded-lg resize-none text-sm"></textarea>
             </div>
-
           </div>
 
           <div class="mt-6 flex justify-end gap-3">
@@ -184,11 +218,26 @@ export class AppComponent {
   anniversaryDate = new Date('2024-08-08T00:00:00');
   cuteStickers = ['🧸✨', '🎀💖', '🌸💕', '🌷💌', '🍓❤️', '🦋✨', '🍄💗', '🎀🧸'];
 
+  isLoggedIn: boolean = false;
+  enteredCode: string = '';
+  secretPasscode: string = '08082024'; 
+  loginError: boolean = false;
+
   editingMemory: Memory | null = null;
   showMemoryForm: boolean = false;
   showProfileForm: boolean = false;
   editProfileData: any = null;
   isSavingProfile: boolean = false;
+
+  checkLogin() {
+    if (this.enteredCode === this.secretPasscode) {
+      this.isLoggedIn = true;
+      this.loginError = false;
+    } else {
+      this.loginError = true;
+      this.enteredCode = ''; 
+    }
+  }
 
   calculateAge(dob: string): number {
     const birthDate = new Date(dob);
@@ -220,7 +269,6 @@ export class AppComponent {
 
   openProfileForm() {
     this.editProfileData = JSON.parse(JSON.stringify(this.coupleProfile()));
-    // ប្រសិនបើកាលពីមុនមិនមាន bottomCaption ឱ្យវាលោតចេញអក្សរនេះជំនួស
     if (!this.editProfileData.bottomCaption) {
       this.editProfileData.bottomCaption = 'Every love story is beautiful, but ours is my favorite. ❤️';
     }
