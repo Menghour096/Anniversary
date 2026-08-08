@@ -13,8 +13,8 @@ import { MemoryService, Memory } from './memory.service';
       
       <!-- Top Header Section -->
       <div class="max-w-4xl mx-auto space-y-6 mb-12 text-center pt-8">
-        <h1 class="text-4xl md:text-5xl font-serif text-rose-800 font-bold drop-shadow-sm">Our Journey</h1>
-        <p class="text-rose-600 mt-2 text-lg">Every moment counts.</p>
+        <h1 class="text-4xl md:text-5xl font-serif text-rose-800 font-bold drop-shadow-sm">HENG MENGHOUR <br>❤️<br>THOU SEANGHONG</h1>
+        <p class="text-rose-600 mt-2 text-lg">START DATE 08-08-2024</p>
         <app-timer [startDate]="anniversaryDate"></app-timer>
 
         <!-- 🌟 New Add Memory Button -->
