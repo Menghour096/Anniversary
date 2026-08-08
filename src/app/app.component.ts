@@ -240,7 +240,7 @@ import { MemoryService, Memory, CoupleProfile } from './memory.service';
             </div>
 
             <div class="p-3 bg-blue-50 rounded-xl border border-blue-100 space-y-2">
-              <h3 class="font-bold text-blue-700">Person 1 (Left)</h3>
+              <h3 class="font-bold text-blue-700">Menghour</h3>
               <input type="text" [(ngModel)]="editProfileData.person1.name" placeholder="Name" class="w-full p-2 border rounded-lg">
               <div class="flex gap-2">
                 <input type="date" [(ngModel)]="editProfileData.person1.dob" class="w-2/3 p-2 border rounded-lg">
@@ -254,7 +254,7 @@ import { MemoryService, Memory, CoupleProfile } from './memory.service';
             </div>
 
             <div class="p-3 bg-pink-50 rounded-xl border border-pink-100 space-y-2">
-              <h3 class="font-bold text-pink-700">Person 2 (Right)</h3>
+              <h3 class="font-bold text-pink-700">SeangHong</h3>
               <input type="text" [(ngModel)]="editProfileData.person2.name" placeholder="Name" class="w-full p-2 border rounded-lg">
               <div class="flex gap-2">
                 <input type="date" [(ngModel)]="editProfileData.person2.dob" class="w-2/3 p-2 border rounded-lg">
