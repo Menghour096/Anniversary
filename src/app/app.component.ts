@@ -10,8 +10,22 @@ import { MemoryService, Memory, CoupleProfile } from './memory.service';
   standalone: true,
   imports: [CommonModule, FormsModule, TimerComponent, MemoryFormComponent],
   
-  // 🌟 នេះគឺជាកូដ CSS សម្រាប់ធ្វើឱ្យបេះដូងអណ្តែតឡើងលើ
+  // 🌟 បន្ថែម CSS សម្រាប់ Background លោតពណ៌ និងបេះដូងអណ្តែត
   styles: [`
+    /* 1. ចលនាសម្រាប់ផ្ទៃខាងក្រោយ (Moving Gradient) */
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .animated-gradient-bg {
+      /* ប្រើពណ៌ផ្កាឈូក និងស៊ីជម្ពូចម្រុះគ្នា */
+      background: linear-gradient(-45deg, #ffe4e6, #fce7f3, #fff1f2, #fbcfe8);
+      background-size: 400% 400%;
+      animation: gradientShift 12s ease infinite;
+    }
+
+    /* 2. ចលនាសម្រាប់បេះដូងអណ្តែត (Floating Hearts) */
     @keyframes floatUp {
       0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 0; }
       10% { opacity: 0.8; }
@@ -27,7 +41,8 @@ import { MemoryService, Memory, CoupleProfile } from './memory.service';
   `],
 
   template: `
-    <main class="min-h-screen bg-gradient-to-br from-pink-100 via-rose-50 to-pink-100 p-4 md:p-8 font-sans pb-10 relative flex flex-col overflow-hidden">
+    <!-- 🟢 បានប្រើ Class ថ្មី 'animated-gradient-bg' ដើម្បីឱ្យផ្ទៃខាងក្រោយមានចលនា -->
+    <main class="min-h-screen animated-gradient-bg p-4 md:p-8 font-sans pb-10 relative flex flex-col overflow-hidden">
       
       <!-- 🌟 Floating Background Animation (បេះដូងអណ្តែត) 🌟 -->
       <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
@@ -72,8 +87,6 @@ import { MemoryService, Memory, CoupleProfile } from './memory.service';
             <div class="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/60"></div>
           </div>
           <div class="absolute inset-0 flex items-center justify-center gap-2 sm:gap-16 px-2 pt-12">
-             
-             <!-- Person 1 (ខាងឆ្វេង) -->
              <div class="flex flex-col items-center z-10 text-white w-1/3">
                 <img [src]="coupleProfile().person1.imageUrl" class="w-24 h-24 sm:w-36 sm:h-36 rounded-full border-4 border-white object-cover shadow-lg hover:scale-105 transition-transform">
                 <h2 class="mt-3 text-sm sm:text-2xl font-bold drop-shadow-md text-center">{{coupleProfile().person1.name}}</h2>
@@ -90,7 +103,6 @@ import { MemoryService, Memory, CoupleProfile } from './memory.service';
                 </div>
              </div>
              
-             <!-- Floating Hearts & Start Date -->
              <div class="flex flex-col items-center justify-center -mt-8 sm:-mt-12 z-20">
                 <div class="text-4xl sm:text-7xl drop-shadow-2xl animate-pulse flex">
                   <span class="text-red-500 transform -rotate-12">❤️</span>
@@ -101,7 +113,6 @@ import { MemoryService, Memory, CoupleProfile } from './memory.service';
                 </div>
              </div>
              
-             <!-- Person 2 (ខាងស្តាំ) -->
              <div class="flex flex-col items-center z-10 text-white w-1/3">
                 <img [src]="coupleProfile().person2.imageUrl" class="w-24 h-24 sm:w-36 sm:h-36 rounded-full border-4 border-white object-cover shadow-lg hover:scale-105 transition-transform">
                 <h2 class="mt-3 text-sm sm:text-2xl font-bold drop-shadow-md text-center">{{coupleProfile().person2.name}}</h2>
